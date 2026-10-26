@@ -1,0 +1,127 @@
+
+.profile-container {
+  position: relative;
+  display: inline-block;
+  z-index: 1000;
+}
+
+.profile-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #f0f8ff;
+  color: #0797cf;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 1000;
+
+  width: 320px;
+  min-width: 320px;
+  padding: 20px;
+  box-sizing: border-box;
+
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+
+  html[data-theme="light"] .profile-dropdown {
+  background: #ffffff;
+  color: #202b46;
+}
+
+html[data-theme="dark"] .profile-dropdown {
+  background: #1f2937;
+  color: #f3f4f6;
+}
+
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+
+.profile-avatar-small {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.profile-details {
+  min-width: 0;
+}
+
+.profile-details h4 {
+  margin: 0 0 5px;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.profile-details p {
+  margin: 0;
+  color: #a9c2d8;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.profile-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 10px 0;
+}
+
+.profile-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #e5f1fa;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.profile-option:hover {
+  background: rgba(0, 190, 255, 0.12);
+}
+
+.logout-option {
+  color: #ff7777;
+}
+
+.logout-option:hover {
+  background: rgba(255, 80, 80, 0.12);
+}
+/* Light mode: profile text and menu options */
+html[data-theme="light"] .profile-dropdown,
+html[data-theme="light"] .profile-dropdown .profile-info,
+html[data-theme="light"] .profile-dropdown .profile-info *,
+html[data-theme="light"] .profile-dropdown button {
+  color: #000000;
+}
+
+/* Dark mode: profile text and menu options */
+html[data-theme="dark"] .profile-dropdown,
+html[data-theme="dark"] .profile-dropdown .profile-info,
+html[data-theme="dark"] .profile-dropdown .profile-info *,
+html[data-theme="dark"] .profile-dropdown button {
+  color: #f3f4f6;
+}

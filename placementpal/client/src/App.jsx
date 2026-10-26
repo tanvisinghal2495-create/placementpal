@@ -24,21 +24,61 @@ import {
   Clock3,
 } from "lucide-react";
 import "./App.css";
+import ProfileMenu from "./components/profilemenu";
+import EditAccount from "./components/editaccount";
+import Resume from "./components/Resume";
 const API_URL = "http://localhost:5000";
+
+
 
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  function handleLogin(e) {
-    e.preventDefault();
-    if (email.trim() && password.trim()) {
-      navigate("/dashboard");
-    }
+  
+async function handleLogin(e) {
+  e.preventDefault();
+  setError("");
+
+  if (!email.trim() || !password) {
+    setError("Please enter your email and password.");
+    return;
   }
-  const API_URL = "http://localhost:5000";
 
+  try {
+    const response = await fetch(`${API_URL}/api/auth/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email.trim(),
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Invalid email or password.");
+    }
+
+    // Keep the logged-in user's details if returned by the backend
+   if (data.user && data.token) {
+  localStorage.setItem("user", JSON.stringify(data.user));
+  localStorage.setItem("token", data.token);
+}
+
+    navigate("/dashboard");
+  } catch (error) {
+    console.error("Signin error:", error);
+    setError(error.message || "Unable to connect to the server.");
+  }
+}
+
+  
 
   return (
     <main className="login-page">
@@ -77,6 +117,11 @@ function Login() {
           <p className="muted">
             Sign in to continue your placement journey.
           </p>
+          {error && (
+  <p role="alert" className="form-error">
+    {error}
+  </p>
+)}
 
           <form onSubmit={handleLogin}>
             <label htmlFor="email">Email address</label>
@@ -137,27 +182,50 @@ function Signup() {
   const [error, setError] = useState("");
 
   async function handleSignup(e) {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    if (!name.trim() || !email.trim() || !password) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    setError("Signup API is not connected yet.");
+  if (!name.trim() || !email.trim() || !password) {
+    setError("Please fill in all fields.");
+    return;
   }
 
+  if (password.length < 8) {
+    setError("Password must be at least 8 characters.");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/api/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Signup failed.");
+    }
+
+    alert("Account created successfully!");
+    navigate("/");
+  } catch (error) {
+    console.error("Signup error:", error);
+    setError(error.message || "Unable to connect to the server.");
+  }
+}
   return (
     <main className="login-page">
       <section className="login-intro">
@@ -385,7 +453,7 @@ async function addJob(e) {
             <button className="icon-button" aria-label="Notifications">
               <Bell size={19} />
             </button>
-            <div className="profile-avatar small-avatar">S</div>
+            <ProfileMenu />
           </div>
         </header>
 
@@ -557,19 +625,25 @@ async function addJob(e) {
                 ))
               )}
             </section>
-          ) : (
-            <section className="panel placeholder-panel">
-              <div className="placeholder-icon">
-                {active === "Preparation" ? <BookOpen size={28} /> :
-                 active === "Resume" ? <FileUser size={28} /> :
-                 <ChartNoAxesCombined size={28} />}
-              </div>
-              <h3>{active} workspace</h3>
-              <p className="muted">
-                This section is ready for us to build in the next milestones.
-              </p>
-            </section>
-          )}
+          
+) : active === "Resume" ? (
+  <Resume />
+) : (
+  <section className="panel placeholder-panel">
+    <div className="placeholder-icon">
+      {active === "Preparation" ? (
+        <BookOpen size={28} />
+      ) : (
+        <ChartNoAxesCombined size={28} />
+      )}
+    </div>
+    <h3>{active} workspace</h3>
+    <p className="muted">
+      This section is ready for us to build in the next milestones.
+    </p>
+  </section>
+)}
+
         </section>
       </main>
     </div>
@@ -596,6 +670,7 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/edit-account" element={<EditAccount />} />
       </Routes>
     </BrowserRouter>
   );

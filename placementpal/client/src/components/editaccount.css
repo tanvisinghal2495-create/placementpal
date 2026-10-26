@@ -1,0 +1,152 @@
+
+/* Theme-aware Edit Account page */
+
+.edit-account-page {
+  --edit-page-bg: #f4f6fb;
+  --edit-card-bg: #ffffff;
+  --edit-text: #202b46;
+  --edit-muted: #68738a;
+  --edit-border: #d5dbea;
+  --edit-input-bg: #ffffff;
+  --edit-primary: #4f46e5;
+
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: var(--edit-page-bg);
+  color: var(--edit-text);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.edit-account-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  box-sizing: border-box;
+  background: var(--edit-card-bg);
+  color: var(--edit-text);
+  border: 1px solid var(--edit-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.edit-account-heading {
+  margin: 0 0 8px;
+  color: var(--edit-text);
+  font-size: 26px;
+}
+
+.edit-account-subtitle {
+  margin: 0 0 24px;
+  color: var(--edit-muted);
+  line-height: 1.5;
+}
+
+.edit-account-label {
+  display: block;
+  margin: 16px 0 8px;
+  color: var(--edit-text);
+  font-weight: 600;
+}
+
+.edit-account-input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px;
+  box-sizing: border-box;
+  background: var(--edit-input-bg);
+  color: var(--edit-text);
+  border: 1px solid var(--edit-border);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 15px;
+}
+
+.edit-account-input::placeholder {
+  color: var(--edit-muted);
+  opacity: 0.85;
+}
+
+.edit-account-input:focus {
+  outline: 2px solid var(--edit-primary);
+  outline-offset: 2px;
+}
+
+.edit-account-message {
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.edit-account-message.success {
+  color: #16803d;
+}
+
+.edit-account-message.error {
+  color: #dc2626;
+}
+
+.edit-account-save,
+.edit-account-back {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.edit-account-save {
+  margin-top: 24px;
+  background: var(--edit-primary);
+  color: #ffffff;
+  border: none;
+}
+
+.edit-account-save:hover,
+.edit-account-back:hover {
+  opacity: 0.88;
+}
+
+.edit-account-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.edit-account-back {
+  background: var(--edit-card-bg);
+  color: var(--edit-text);
+  border: 1px solid var(--edit-border);
+}
+
+
+/* Light theme */
+html[data-theme="light"] .edit-account-page,
+html:not([data-theme="dark"]) .edit-account-page {
+  --edit-page-bg: #f4f6fb;
+  --edit-card-bg: #ffffff;
+  --edit-text: #202b46;
+  --edit-muted: #68738a;
+  --edit-border: #d5dbea;
+  --edit-input-bg: #ffffff;
+  --edit-primary: #4f46e5;
+}
+
+/* Dark theme */
+html[data-theme="dark"] .edit-account-page {
+  --edit-page-bg: #111827;
+  --edit-card-bg: #1f2937;
+  --edit-text: #f3f4f6;
+  --edit-muted: #b0bacb;
+  --edit-border: #374151;
+  --edit-input-bg: #111827;
+  --edit-primary: #6366f1;
+}
