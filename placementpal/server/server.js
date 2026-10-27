@@ -608,6 +608,85 @@ app.post("/api/applications", authenticateToken, async (req, res) => {
   }
 });
 
+ // Update an application's status
+app.patch("/api/applications/:id/status", authenticateToken, async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    if (!allowedApplicationStatuses.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid application status.",
+      });
+    }
+
+    const application = await Application.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        userId: req.userId,
+      },
+      {
+        status,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!application) {
+      return res.status(404).json({
+        message: "Application not found.",
+      });
+    }
+
+    res.json(application);
+  } catch (error) {
+    console.error("Update application status error:", error.message);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid application ID.",
+      });
+    }
+
+    res.status(500).json({
+      message: "Could not update application status.",
+    });
+  }
+});
+// Delete an application
+app.delete("/api/applications/:id", authenticateToken, async (req, res) => {
+  try {
+    const application = await Application.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.userId,
+    });
+
+    if (!application) {
+      return res.status(404).json({
+        message: "Application not found.",
+      });
+    }
+
+    res.json({
+      message: "Application deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Delete application error:", error.message);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid application ID.",
+      });
+    }
+
+    res.status(500).json({
+      message: "Could not delete the application.",
+    });
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`PlacementPal server running on port ${PORT}`);
 });

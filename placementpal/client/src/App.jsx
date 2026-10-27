@@ -22,11 +22,13 @@ import {
   Target,
   CheckCircle2,
   Clock3,
+  Trash2
 } from "lucide-react";
 import "./App.css";
 import ProfileMenu from "./components/profilemenu";
 import EditAccount from "./components/editaccount";
 import Resume from "./components/Resume";
+import JobOpportunities from "./JobOpportunities";
 const API_URL = "http://localhost:5000";
 
 
@@ -311,6 +313,289 @@ const initialJobs = [
   { company: "Wipro", role: "Project Engineer", status: "Saved" },
 ];
 
+const preparationResources = [
+  {
+    id: "aptitude-1",
+    category: "Aptitude",
+    title: "Quantitative aptitude",
+    description: "Practice percentages, ratios, averages and number systems.",
+    resourceLabel: "Practice questions",
+    url: "https://www.indiabix.com/aptitude/questions-and-answers/",
+  },
+  {
+    id: "aptitude-2",
+    category: "Aptitude",
+    title: "Logical reasoning",
+    description: "Improve problem-solving and logical thinking.",
+    resourceLabel: "Reasoning practice",
+    url: "https://www.indiabix.com/logical-reasoning/questions-and-answers/",
+  },
+  {
+    id: "aptitude-3",
+    category: "Aptitude",
+    title: "Verbal ability",
+    description: "Practice grammar, vocabulary and verbal questions.",
+    resourceLabel: "Verbal practice",
+    url: "https://www.indiabix.com/verbal-ability/questions-and-answers/",
+  },
+  {
+    id: "technical-1",
+    category: "Technical Skills",
+    title: "JavaScript fundamentals",
+    description: "Learn variables, functions, objects and asynchronous JavaScript.",
+    resourceLabel: "Read the guide",
+    url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+  },
+  {
+    id: "technical-2",
+    category: "Technical Skills",
+    title: "Data structures and algorithms",
+    description: "Study arrays, linked lists, stacks, queues and algorithms.",
+    resourceLabel: "Explore tutorials",
+    url: "https://www.geeksforgeeks.org/data-structures/",
+  },
+  {
+    id: "technical-3",
+    category: "Technical Skills",
+    title: "Hands-on coding practice",
+    description: "Strengthen your programming skills with interactive lessons.",
+    resourceLabel: "Start learning",
+    url: "https://www.freecodecamp.org/learn/",
+  },
+  {
+    id: "interview-1",
+    category: "Interview Preparation",
+    title: "Common interview questions",
+    description: "Prepare answers and learn how to approach interviews.",
+    resourceLabel: "Read interview advice",
+    url: "https://www.themuse.com/advice",
+  },
+  {
+    id: "interview-2",
+    category: "Interview Preparation",
+    title: "Resume improvement",
+    description: "Learn how to present your experience and projects clearly.",
+    resourceLabel: "Resume resources",
+    url: "https://www.indeed.com/career-advice/resumes-cover-letters",
+  },
+  {
+    id: "interview-3",
+    category: "Interview Preparation",
+    title: "Mock interview practice",
+    description: "Learn how to communicate your skills and experience confidently.",
+    resourceLabel: "Interview tips",
+    url: "https://www.indeed.com/career-advice/interviewing",
+  },
+];
+
+function PreparationPage({ completedTasks, onToggleTask }) {
+  const categories = [
+    "Aptitude",
+    "Technical Skills",
+    "Interview Preparation",
+  ];
+
+  return (
+    <div className="preparation-page">
+      <section className="panel prep-intro">
+        <span className="eyebrow">YOUR LEARNING PLAN</span>
+        <h2>Prepare for your next opportunity</h2>
+        <p className="muted">
+          Learn at your own pace, explore useful resources,
+          and mark each task complete when you finish it.
+        </p>
+        <div className="prep-progress-track">
+          <div
+            className="prep-progress-fill"
+            style={{
+              width: `${
+                (completedTasks.length / preparationResources.length) * 100
+              }%`,
+            }}
+          />
+        </div>
+        <p className="muted">
+          {completedTasks.length} of {preparationResources.length} tasks completed
+        </p>
+      </section>
+
+      {categories.map((category) => {
+        const tasks = preparationResources.filter(
+          (task) => task.category === category
+        );
+
+        const completedInCategory = tasks.filter(
+          (task) => completedTasks.includes(task.id)
+        ).length;
+
+        return (
+          <section className="prep-category" key={category}>
+            <div className="prep-category-heading">
+              <div>
+                <h2>{category}</h2>
+                <p className="muted">
+                  {completedInCategory} of {tasks.length} completed
+                </p>
+              </div>
+              <BookOpen size={23} />
+            </div>
+
+            <div className="prep-resource-list">
+              {tasks.map((task) => {
+                const isCompleted = completedTasks.includes(task.id);
+
+                return (
+                  <article
+                    className={`prep-resource-card ${
+                      isCompleted ? "task-completed" : ""
+                    }`}
+                    key={task.id}
+                  >
+                    <label className="prep-checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={isCompleted}
+                        onChange={() => onToggleTask(task.id)}
+                      />
+                      <span className="prep-task-content">
+                        <strong>{task.title}</strong>
+                        <span>{task.description}</span>
+                      </span>
+                    </label>
+
+                    <a
+                      className="prep-resource-link"
+                      href={task.url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {task.resourceLabel} <ArrowRight size={15} />
+                    </a>
+
+                    {isCompleted && (
+                      <span className="prep-completed-label">
+                        <CheckCircle2 size={15} /> Completed
+                      </span>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function ProgressPage({ completedTasks }) {
+  const totalTasks = preparationResources.length;
+  const completedCount = preparationResources.filter(
+    (task) => completedTasks.includes(task.id)
+  ).length;
+
+  const percentage = Math.round((completedCount / totalTasks) * 100);
+
+  const categories = [
+    "Aptitude",
+    "Technical Skills",
+    "Interview Preparation",
+  ];
+
+  return (
+    <div className="progress-page">
+      <section className="panel overall-progress">
+        <span className="eyebrow">YOUR PLACEMENT JOURNEY</span>
+        <h2>Track your preparation</h2>
+        <p className="muted">
+          Every completed preparation task contributes to your progress.
+        </p>
+
+        <div className="overall-progress-number">
+          <strong>{percentage}%</strong>
+          <span>overall completion</span>
+        </div>
+
+        <div className="prep-progress-track">
+          <div
+            className="prep-progress-fill"
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+
+        <div className="progress-summary-grid">
+          <div className="progress-summary-card">
+            <CheckCircle2 size={22} />
+            <strong>{completedCount}</strong>
+            <span>Tasks completed</span>
+          </div>
+
+          <div className="progress-summary-card">
+            <Clock3 size={22} />
+            <strong>{totalTasks - completedCount}</strong>
+            <span>Tasks remaining</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="panel category-progress-panel">
+        <div className="panel-heading">
+          <div>
+            <h3>Progress by category</h3>
+            <p className="muted">
+              See which areas need more attention.
+            </p>
+          </div>
+          <Target size={22} />
+        </div>
+
+        {categories.map((category) => {
+          const tasks = preparationResources.filter(
+            (task) => task.category === category
+          );
+
+          const completed = tasks.filter(
+            (task) => completedTasks.includes(task.id)
+          ).length;
+
+          const categoryPercentage = Math.round(
+            (completed / tasks.length) * 100
+          );
+
+          return (
+            <div className="category-progress-item" key={category}>
+              <div className="category-progress-heading">
+                <strong>{category}</strong>
+                <span>
+                  {completed}/{tasks.length} tasks · {categoryPercentage}%
+                </span>
+              </div>
+
+              <div className="prep-progress-track">
+                <div
+                  className="prep-progress-fill"
+                  style={{ width: `${categoryPercentage}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
+
+        <button
+          type="button"
+          className="primary-button progress-continue-button"
+          onClick={() => {
+            window.dispatchEvent(new Event("open-preparation-page"));
+          }}
+        >
+          Continue preparation <ArrowRight size={17} />
+        </button>
+      </section>
+    </div>
+  );
+}
+
+
 function Dashboard() {
   
 const [theme, setTheme] = useState(() => {
@@ -329,10 +614,67 @@ const toggleTheme = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState("Dashboard");
   const [jobs, setJobs] = useState([]);
-  useEffect(() => {
+  
+const [completedPrepTasks, setCompletedPrepTasks] = useState(() => {
+  try {
+    return JSON.parse(
+      localStorage.getItem("placementpal-prep-completed") || "[]"
+    );
+  } catch {
+    return [];
+  }
+});
+const [preparationPageRequested, setPreparationPageRequested] = useState(0);
+
+useEffect(() => {
+  localStorage.setItem(
+    "placementpal-prep-completed",
+    JSON.stringify(completedPrepTasks)
+  );
+}, [completedPrepTasks]);
+
+function togglePrepTask(taskId) {
+  setCompletedPrepTasks((previousTasks) =>
+    previousTasks.includes(taskId)
+      ? previousTasks.filter((id) => id !== taskId)
+      : [...previousTasks, taskId]
+  );
+}
+
+const preparationPercentage = Math.round(
+  (completedPrepTasks.filter((id) =>
+    preparationResources.some((task) => task.id === id)
+  ).length / preparationResources.length) * 100
+);
+
+  
+useEffect(() => {
   async function fetchApplications() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
     try {
-      const response = await fetch(`${API_URL}/api/applications`);
+      const response = await fetch(`${API_URL}/api/applications`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to load applications.");
+      }
+
       const data = await response.json();
       setJobs(data);
     } catch (error) {
@@ -341,22 +683,49 @@ const toggleTheme = () => {
   }
 
   fetchApplications();
-}, []);
+}, [navigate]);
+
   const [showForm, setShowForm] = useState(false);
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
+  useEffect(() => {
+  function openPreparationPage() {
+    setActive("Preparation");
+  }
+
+  window.addEventListener(
+    "open-preparation-page",
+    openPreparationPage
+  );
+
+  return () => {
+    window.removeEventListener(
+      "open-preparation-page",
+      openPreparationPage
+    );
+  };
+}, []);
 
   
+
 async function addJob(e) {
   e.preventDefault();
 
   if (!company.trim() || !role.trim()) return;
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/");
+    return;
+  }
 
   try {
     const response = await fetch(`${API_URL}/api/applications`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         company: company.trim(),
@@ -364,22 +733,127 @@ async function addJob(e) {
       }),
     });
 
-    if (!response.ok) {
-      throw new Error("Failed to save application");
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/");
+      return;
     }
 
-    const newJob = await response.json();
+    const data = await response.json();
 
-    setJobs((previousJobs) => [...previousJobs, newJob]);
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to save application.");
+    }
+
+    setJobs((previousJobs) => [...previousJobs, data]);
     setCompany("");
     setRole("");
     setShowForm(false);
     setActive("Applications");
   } catch (error) {
     console.error("Error saving application:", error);
-    alert("Could not save the application. Please try again.");
+    alert(error.message || "Could not save the application. Please try again.");
   }
 }
+
+async function updateJobStatus(jobId, newStatus) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/applications/${jobId}/status`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/");
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || "Could not update status.");
+    }
+
+    setJobs((previousJobs) =>
+      previousJobs.map((job) =>
+        job._id === data._id ? data : job
+      )
+    );
+  } catch (error) {
+    console.error("Update status error:", error);
+    alert(error.message || "Could not update application status.");
+  }
+}
+
+async function deleteJob(jobId) {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this application?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/applications/${jobId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/");
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Could not delete the application."
+      );
+    }
+
+    setJobs((previousJobs) =>
+      previousJobs.filter((job) => job._id !== jobId)
+    );
+  } catch (error) {
+    console.error("Delete application error:", error);
+    alert(error.message || "Could not delete the application.");
+  }
+}
+
+
 
   const menu = [
     { name: "Dashboard", icon: LayoutDashboard },
@@ -387,6 +861,7 @@ async function addJob(e) {
     { name: "Preparation", icon: BookOpen },
     { name: "Resume", icon: FileUser },
     { name: "Progress", icon: ChartNoAxesCombined },
+    { name: "Job Opportunities", icon: BriefcaseBusiness },
   ];
 
   return (
@@ -420,13 +895,19 @@ async function addJob(e) {
             <strong>Student</strong>
             <span>Placement journey</span>
           </div>
-          <button
-            className="icon-button"
-            title="Sign out"
-            onClick={() => navigate("/")}
-          >
-            <LogOut size={18} />
-          </button>
+          
+<button
+  className="icon-button"
+  title="Sign out"
+  onClick={() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  }}
+>
+  <LogOut size={18} />
+</button>
+
         </div>
       </aside>
 
@@ -461,23 +942,32 @@ async function addJob(e) {
           <div className="welcome-row">
             <div>
               <span className="eyebrow">YOUR CAREER WORKSPACE</span>
-              <h1>
-                {active === "Dashboard"
-                  ? "Welcome back!"
-                  : active}
-              </h1>
+             
+
+<h1>
+  {active === "Dashboard"
+    ? `Welcome back, ${JSON.parse(localStorage.getItem("user") || "{}").name || "there"}!`
+    : active === "Job Opportunities"
+    ? ""
+    : active}
+</h1>
+
               <p className="muted">
                 {active === "Dashboard"
                   ? "Small steps today, big opportunities tomorrow."
                   : `Manage your ${active.toLowerCase()} in one place.`}
               </p>
-            </div>
-            <button
-              className="primary-button add-button"
-              onClick={() => setShowForm(!showForm)}
-            >
-              + Add application
-            </button>
+                        </div>
+
+            {active === "Applications" && (
+              <button
+                className="primary-button add-button"
+                type="button"
+                onClick={() => setShowForm(!showForm)}
+              >
+                + Add application
+              </button>
+            )}
           </div>
 
           {showForm && (
@@ -516,12 +1006,14 @@ async function addJob(e) {
                   value={jobs.filter(j => j.status === "Interview").length}
                   note="Interviews and next steps"
                 />
-                <StatCard
-                  icon={Target}
-                  label="Preparation goal"
-                  value="0%"
-                  note="Start your weekly goal"
-                />
+                
+<StatCard
+  icon={Target}
+  label="Preparation goal"
+  value={`${preparationPercentage}%`}
+  note={`${completedPrepTasks.length} of ${preparationResources.length} tasks completed`}
+/>
+
                 <StatCard
                   icon={CalendarDays}
                   label="Upcoming"
@@ -557,9 +1049,32 @@ async function addJob(e) {
                           <strong>{job.company}</strong>
                           <span>{job.role}</span>
                         </div>
-                        <span className={`status status-${job.status.toLowerCase()}`}>
-                          {job.status}
-                        </span>
+                        
+<select
+  className={`status-select status-${job.status.toLowerCase()}`}
+  value={job.status}
+  onChange={(e) => updateJobStatus(job._id, e.target.value)}
+>
+  {["Saved", "Applied", "Interview", "Offer", "Rejected"].map(
+    (status) => (
+      <option key={status} value={status}>
+        {status}
+      </option>
+    )
+  )}
+</select>
+
+<button
+  type="button"
+  className="delete-button"
+  onClick={() => deleteJob(job._id)}
+  title="Delete application"
+  aria-label="Delete application"
+>
+  <Trash2 size={18} />
+</button>
+
+
                       </div>
                     ))}
                   </div>
@@ -618,24 +1133,53 @@ async function addJob(e) {
                       <strong>{job.company}</strong>
                       <span>{job.role}</span>
                     </div>
-                    <span className={`status status-${job.status.toLowerCase()}`}>
-                      {job.status}
-                    </span>
+                    
+<select
+  className={`status-select status-${job.status.toLowerCase()}`}
+  value={job.status}
+  onChange={(e) => updateJobStatus(job._id, e.target.value)}
+>
+  {["Saved", "Applied", "Interview", "Offer", "Rejected"].map(
+    (status) => (
+      <option key={status} value={status}>
+        {status}
+      </option>
+    )
+  )}
+</select>
+
+<button
+  type="button"
+  className="delete-button"
+  onClick={() => deleteJob(job._id)}
+  title="Delete application"
+  aria-label="Delete application"
+>
+  <Trash2 size={18} />
+</button>
+
+
                   </div>
                 ))
               )}
             </section>
           
+
+) : active === "Preparation" ? 
+  <PreparationPage
+    completedTasks={completedPrepTasks}
+    onToggleTask={togglePrepTask}
+  />
+ : active === "Progress" ? (
+  <ProgressPage completedTasks={completedPrepTasks} />
 ) : active === "Resume" ? (
   <Resume />
+) : active === "Job Opportunities" ? (
+  <JobOpportunities onSaveJob={addJob} />
 ) : (
   <section className="panel placeholder-panel">
     <div className="placeholder-icon">
-      {active === "Preparation" ? (
-        <BookOpen size={28} />
-      ) : (
-        <ChartNoAxesCombined size={28} />
-      )}
+      <ChartNoAxesCombined size={28} />
     </div>
     <h3>{active} workspace</h3>
     <p className="muted">
@@ -643,6 +1187,7 @@ async function addJob(e) {
     </p>
   </section>
 )}
+
 
         </section>
       </main>
